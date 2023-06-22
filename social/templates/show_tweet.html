@@ -1,0 +1,34 @@
+{%extends 'base.html'%}
+{% block title %}{{talks.body}}{% endblock %}
+{% load static%}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <br>
+            <div class="alert alert-light d-flex align-items-center" role="alert">
+                {%if talks.user.profile.profile_image %}
+                    <div class="text-center p-2">
+                        <img src="{{talks.user.profile.profile_image.url}}" class="rounded-circle" width="35" height="35">
+                    </div>
+                {%else%}
+                    <div class="text-center p-2">
+                        <img src="{%static 'images/user.png' %}" class="rounded-circle" width="35" height="35">
+                    </div>
+                {%endif%}
+                {{talks.body}} <small class="text-muted ms-auto p-2">{{talks.created}}</small>
+
+                - {{talks.num_of_likes}} Likes &nbsp
+                        {% if user in talks.likes.all %}
+                        <a class="text-decoration-none" href="{% url 'likes' talks.id%}"> <i class="fa fa-heart" style="color: red;"></i></a>
+                        {% else%}
+                        <a class="text-decoration-none" href="{% url 'likes' talks.id%}"> <i class="fa fa-heart-o" style="color: red;"></i></a>
+                        {%endif%}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

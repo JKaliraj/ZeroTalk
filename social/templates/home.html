@@ -1,0 +1,50 @@
+{%extends 'base.html'%}
+{% block title %}ZeroTalk{% endblock %}
+{%load static%}
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <h2>Talks</h2>
+            <br>
+            {%if talks%}
+            {%for talk in talks%}
+            <div class="alert alert-light d-flex align-items-center" class="text-end" role="alert">
+                {%if talk.user.profile.profile_image %}
+                    <div class="text-center p-2">
+                        <img src="{{talk.user.profile.profile_image.url}}" class="rounded-circle" width="35" height="35">
+                    </div>
+                {%else%}
+                    <div class="text-center p-2">
+                        <img src="{%static 'images/user.png' %}" class="rounded-circle" width="35" height="35">
+                    </div>
+                {%endif%}
+                {{talk.body}} <small class="text-muted ms-auto p-2">{{talk.created}} By <a class="text-decoration-none"
+                        href="{%url 'profile' talk.user.id %}">@{{talk.user}}</a></small>
+                        - {{talk.num_of_likes}}&nbsp
+                        {% if user in talk.likes.all %}
+                        <a class="text-decoration-none" href="{% url 'likes' talk.id%}"> <i class="fa fa-heart" style="color: red;"></i></a>
+                        {% else%}
+                        <a class="text-decoration-none" href="{% url 'likes' talk.id%}"><i class="fa fa-heart-o" style="color: red;"></i></a>
+                        {%endif%}
+                        &nbsp&nbsp
+                        <a class="text-decoration-none" href="{% url 'share' talk.id%}"><i class="fa fa-2xs fa-share" style="color: grey;"></i></a>
+
+            </div>
+            {%endfor%}
+            {%endif%}
+        </div>
+        <div class="col-4 text-center">
+            <br><br><br>
+            {%if form%}
+            <form action="" method="post">
+                {%csrf_token%}
+                {{form.as_p}}
+                <button type="submit" class="btn btn-secondary">Post Your Talk</button>
+            </form>
+            {%endif%}
+        </div>
+    </div>
+</div>
+{% endblock %}

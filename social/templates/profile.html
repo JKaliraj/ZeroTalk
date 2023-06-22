@@ -1,0 +1,126 @@
+{%extends 'base.html'%}
+{% block title %}My Profile{% endblock %}
+{% load static%}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <h2>{{profile.user.username}}'s Profile</h2>
+            <br>
+            {%if talks%}
+            {%for talk in talks%}
+            <div class="alert alert-light d-flex align-items-center" role="alert">
+                {%if talk.user.profile.profile_image %}
+                    <div class="text-center p-2">
+                        <img src="{{talk.user.profile.profile_image.url}}" class="rounded-circle" width="35" height="35">
+                    </div>
+                {%else%}
+                    <div class="text-center p-2">
+                        <img src="{%static 'images/user.png' %}" class="rounded-circle" width="35" height="35">
+                    </div>
+                {%endif%}
+                {{talk.body}} <small class="text-muted ms-auto p-2">{{talk.created}}</small>
+
+                - {{talk.num_of_likes}} Likes &nbsp
+                        {% if user in talk.likes.all %}
+                        <a class="text-decoration-none" href="{% url 'likes' talk.id%}"> <i class="fa fa-heart" style="color: red;"></i></a>
+                        {% else%}
+                        <a class="text-decoration-none" href="{% url 'likes' talk.id%}"> <i class="fa fa-heart-o" style="color: red;"></i></a>
+                        {%endif%}
+                        &nbsp
+                        <a class="text-decoration-none" href="{% url 'share' talk.id%}"><i class="fa fa-share" style="color: grey;"></i></a>
+
+            </div>
+            {%endfor%}
+            {%endif%}
+        </div>
+        <div class="col-4">
+            <br>
+            {%if profile.profile_image%}
+            <div class="text-center">
+                <img src="{{profile.profile_image.url}}" class="rounded-circle" width="150" height="150">
+            </div>
+            {%else%}
+            <div class="text-center">
+                <img src="{%static 'images/user.png' %}" class="rounded-circle" width="150" height="150">
+            </div>
+            {%endif%}
+            <br>
+
+            <div class="text-center">
+                {%if profile.website_link%}
+                <a href="{{profile.website_link}}" target="new"><i class="fa fa-link" style="color: grey;"></i></a>
+                {%endif%}
+                {%if profile.facebook_link%}
+                &nbsp
+                <a href="{{profile.facebook_link}}" target="new"><i class="fa fa-facebook-f" style="color: grey;"></i></a>
+                {%endif%}
+                {%if profile.instagram_link%}
+                &nbsp
+                <a href="{{profile.instagram_link}}" target="new"><i class="fa fa-instagram" style="color: grey;"></i></a>
+                {%endif%}
+                {%if profile.linkedin_link%}
+                &nbsp
+                <a href="{{profile.linkedin_link}}" target="new"><i class="fa fa-linkedin" style="color: grey;"></i></a>
+                {%endif%}
+            </div>
+            <br>
+
+            <div class="text-center">
+                {%if profile.bio%}
+                <p align="justify">{{ profile.bio }}</p>
+                {%endif%}
+            </div>
+            
+
+            <div class="card text-bg-light">
+                <div class="card-header">Follows</div>
+                <div class="card-body">
+                    <p class="card-text">
+                        {%for i in profile.follows.all %}
+                        <a class="text-decoration-none" href="{%url 'profile' i.user.id %}">@{{i}}</a>
+                        <br>
+                        {%endfor%}
+                    </p>
+                </div>
+            </div>
+            <br>
+            <div class="card text-bg-light" >
+                <div class="card-header">Followed by</div>
+                <div class="card-body">
+                    <p class="card-text">
+                        {%for i in profile.followed_by.all %}
+                        <a class="text-decoration-none" href="{%url 'profile' i.user.id %}">@{{i}}</a>
+                        <br>
+                        {%endfor%}
+                    </p>
+                </div>
+            </div>
+            <br>
+            <form action="" method="post">
+                {%csrf_token%}
+                {%if showBtn%}
+                {%if profile in user.profile.follows.all%}
+                <div class="text-center">
+                    <button type="submit" class="btn btn-outline-danger" name="follow" value="unfollow">Unfollow @{{profile|lower }}</button>
+                </div>
+                {%else%}
+                <div class="text-center">
+                <button type="submit" class="btn btn-outline-success" name="follow" value="follow">Follow @{{profile|lower }}</button>
+                </div>
+                {%endif%}
+                {%endif%}
+            </form>
+
+            <br>
+            {%if request.user.id == profile.user.id%}
+            <div class="text-center">
+                <a href="{%url 'update_user'%}" class="btn btn-outline-secondary">Update Profile</a>
+              </div>
+            {%endif%}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
