@@ -1,4 +1,5 @@
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+{% load static %} 
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'home' %}">ZeroTalk</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +29,15 @@
         {%if user.is_authenticated%}
         <div class="d-flex">
           <a class="navbar-brand" href="{% url 'profile' request.user.id %}">
-            <img src="{{ user.profile.profile_image.url }}" width="30" height="30" class="d-inline-block align-text-top rounded-circle">
+            {%if user.profile.profile_image %}
+                <div class="text-center p-2">
+                    <img src="{{user.profile.profile_image.url}}" width="30" height="30" class="d-inline-block align-text-top rounded-circle">
+                </div>
+            {%else%}
+                <div class="text-center p-2">
+                    <img src="{% static 'images/user.png' %}" width="30" height="30" class="d-inline-block align-text-top rounded-circle">
+                </div>
+            {%endif%}
           </a>
         </div>
         {%endif%}
